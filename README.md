@@ -66,3 +66,83 @@ s3://bucket/main/<projectId>/<buildId>/
 ---
 
 ### **4. Upload Service**
+Handles:
+- Static file uploads  
+- Signed URLs  
+- Metadata  
+- File validation  
+- Direct S3 operations  
+
+---
+
+### **5. Static File Server**
+Used for:
+- Production asset downloads  
+- CDN-style serving  
+- Optimized static serving for JS/CSS/Images  
+
+---
+
+### **6. Redis Queue / PubSub**
+Used for:
+- Build job scheduling  
+- Realtime log streaming  
+- Worker coordination  
+- Deploy pipeline events  
+
+---
+
+### **7. Nginx Reverse Proxy**
+Entry point for all public traffic.
+
+Functions:
+- Reverse proxy to route-handler  
+- SSL termination  
+- Dynamic routing based on domain  
+- Caching static content  
+- WebSocket proxy (for build logs)  
+
+Example routing:
+
+```
+projectId.sunildev.com → route-handler
+mycustomdomain.com → route-handler
+```
+
+---
+
+## **Deployment Flow**
+
+### **1. User triggers deployment**
+- Code/upload → Deploy service  
+- Repo cloned  
+- Build job created  
+- Job pushed into Redis queue  
+
+### **2. Build worker handles job**
+- Pulls job from queue  
+- Builds using Docker  
+- Streams logs  
+- Stores output in S3  
+
+### **3. Serving deployed site**
+- Nginx intercepts request  
+- Forwards to route-handler  
+- Route-handler resolves correct build folder  
+- Fetches index.html + assets from S3  
+- Returns final site  
+
+---
+
+## **Key Features**
+- Docker build isolation  
+- Redis-based distributed queue  
+- Real-time log streaming  
+- S3-based artifact storage  
+- Zero downtime routing  
+- Dynamic domain/subdomain routing  
+- Clean multi-service architecture  
+- Production-grade reverse proxy (Nginx)
+
+
+
